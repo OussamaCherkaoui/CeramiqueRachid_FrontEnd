@@ -1,0 +1,37 @@
+<mat-toolbar class="navbar" *ngIf="!verifyUrl(this.router.url)">
+  <div class="nav-container">
+    <div>
+      <nav class="nav-links">
+        <a mat-button routerLink="/" [class.active]="isActive('/')">
+          Accueil
+        </a>
+
+        <a mat-button
+           routerLink="/nosProduits"
+           [class.active]="isActive('/nosProduits')">
+          Nos produits
+        </a>
+
+        <a mat-raised-button
+           routerLink="/nosPromotions"
+           [class.active]="isActive('/nosPromotions')">
+          Nos promotions
+        </a>
+
+        <a mat-button
+           routerLink="/contactez-nous"
+           [class.active]="isActive('/contactez-nous')">
+          Contactez-nous
+        </a>
+      </nav>
+    </div>
+
+
+    <div class="logo-section" routerLink="/" >
+      <img src="assets/pictures/logo1.png"
+           alt="Ceramique Rachid Logo"
+           class="logo"
+           >
+    </div>
+  </div>
+</mat-toolbar>

@@ -1,0 +1,109 @@
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Logo -->
+    <div class="logo-section">
+      <div class="logo-container">
+          <img width="200" height="200" src="assets/pictures/logo1.png"
+               alt="Ceramique Rachid Logo"
+               class="logo"
+          >
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav">
+      <ul>
+        <li>
+          <a href="#" class="nav-item active">
+            <div class="nav-icon">
+              <i class="fas fa-th-large"></i>
+            </div>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <span>Commandes</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-box"></i>
+            </div>
+            <span>Produits</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+            <span>Promotions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <span>Ajouté un admin</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <span>Message</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-item">
+            <div class="nav-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <span>Accueil</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Top Navigation Bar -->
+    <header class="header">
+      <div class="header-container">
+        <h1>Tableau de bord</h1>
+        <div class="header-buttons">
+          <button class="btn btn-outline">
+            <i class="fas fa-user"></i>
+            Admin
+          </button>
+          <button class="btn btn-dark">
+            <i class="fas fa-sign-out-alt"></i>
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Router Outlet - Content Area -->
+    <main class="content-area">
+      <!-- Ici sera injecté le contenu des routes enfants -->
+      <div class="content-placeholder">
+        <!-- <router-outlet></router-outlet> -->
+        <div class="placeholder-content">
+          <div class="placeholder-icon">📄</div>
+          <p class="placeholder-title">Contenu de la route enfant</p>
+          <p class="placeholder-subtitle">Le contenu sera affiché via &lt;router-outlet&gt;&lt;/router-outlet&gt;</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

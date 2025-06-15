@@ -1,0 +1,164 @@
+.footer {
+  background-color: #1a1a1a;
+  color: white;
+  margin: 0 auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 30px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* Logo Section */
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+.company-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.company-subtitle {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.social-links {
+  width: 53%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 10px;
+}
+
+.social-link {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.social-link:hover {
+  transform: translateY(-2px);
+}
+
+.facebook {
+  background-color: #1877F2;
+}
+
+.instagram {
+  background: linear-gradient(45deg, #E4405F, #5B51D8, #833AB4);
+}
+
+.twitter {
+  background-color: #1DA1F2;
+}
+
+.social-icon {
+  width: 18px;
+  height: 18px;
+  fill: white;
+}
+
+/* Navigation Section */
+
+.nav-section{
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: space-between;
+}
+.nav-section ul {
+  list-style: none;
+}
+
+.nav-section li {
+  margin-bottom: 12px;
+}
+
+.nav-section a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.nav-section a:hover {
+  color: white;
+}
+
+/* Contact Section */
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  fill: #999;
+}
+
+.contact-item a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+  color: white;
+}
+
+/* Copyright */
+.copyright {
+padding: 16px;
+  background-color: white;
+  border-top: 1px solid #333;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .logo-section {
+    align-items: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+}

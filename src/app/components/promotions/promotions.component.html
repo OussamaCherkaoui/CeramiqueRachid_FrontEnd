@@ -1,0 +1,101 @@
+<div class="promotions-container">
+  <!-- Header -->
+  <div class="header">
+    <h1 class="title">Nos Promotions</h1>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" class="category-select">
+      <mat-label>Rechercher par catégorie :</mat-label>
+      <mat-select [(value)]="selectedCategory" (selectionChange)="onCategoryChange($event.value)">
+        <mat-option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Promotions Grid -->
+  <div class="promotions-grid">
+    <mat-card *ngFor="let promo of promotions" class="promotion-card">
+      <div class="card-content">
+        <!-- Image Section -->
+        <div class="image-section">
+          <img [src]="promo.produit.image" [alt]="promo.titre" class="promo-image">
+          <div class="title-overlay">
+            <h3>{{ promo.titre }}</h3>
+          </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="details-section">
+          <mat-card-header>
+            <mat-card-title class="category-title">{{ promo.produit.categorie.nom }}</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="description">{{ promo.description }}</p>
+
+            <div class="promo-details">
+              <div class="detail-row">
+                <span class="label">Pourcentage de réduction :</span>
+                <span class="value discount">{{ promo.taux }}%</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label">Prix de base :</span>
+                <span class="value">{{ promo.produit.prix }} dh</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label">Prix de promotion :</span>
+                <span class="value price">{{ promo.produit.prix }} dh</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label">Date de début :</span>
+                <span class="value">{{ promo.dateDebut }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label">Date de fin :</span>
+                <span class="value">{{ promo.dateFin }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </div>
+      </div>
+
+      <!-- Resolution Badge -->
+      <div class="resolution-badge">
+        <mat-chip class="resolution-chip">1297 x 651</mat-chip>
+      </div>
+    </mat-card>
+  </div>
+  <!-- Pagination -->
+  <div class="pagination-section">
+    <mat-paginator
+      [length]="totalPages * itemsPerPage"
+      [pageSize]="itemsPerPage"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[4, 8, 12]"
+      (page)="onPageChange($event.pageIndex + 1)"
+      showFirstLastButtons>
+    </mat-paginator>
+
+    <div class="page-info">
+      <span>Items par page : {{ itemsPerPage }}</span>
+      <span>{{ currentPage }} - {{ itemsPerPage }} of {{ totalPages }}</span>
+
+      <div class="navigation-buttons">
+        <button mat-icon-button (click)="previousPage()" [disabled]="currentPage === 1">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

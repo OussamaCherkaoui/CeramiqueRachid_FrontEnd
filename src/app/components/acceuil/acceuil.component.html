@@ -1,0 +1,202 @@
+<div class="home-container">
+
+  <!-- Section Hero -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1><span style="color: #1d4ed8">Bienvenue</span><br>Chez Céramique Rachid</h1>
+        <p>Spécialiste de la pose de carrelage et faïence au Maroc.
+          Nous transformons vos espaces avec expertise et passion,
+          en utilisant des matériaux de qualité supérieure.</p>
+        <div class="hero-buttons">
+          <button class="btn-primary">Découvrez nos produits</button>
+          <button class="btn-secondary">Voir nos promotions</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="/assets/pictures/image-acceuil.jpg" alt="Pose de carrelage professionnel" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Section À propos -->
+  <section class="about-section">
+    <div class="about-content">
+      <div class="about-image">
+        <img src="/assets/pictures/acceuil2.jpg" alt="Rachid - Artisan carreleur" />
+      </div>
+      <div class="about-text">
+        <h2>Nous connaissons notre<br> métier depuis <span class="highlight">15 ans d'expérience</span></h2>
+
+        <p><strong>Nous sommes</strong> Ceramique rachid et Célia le couple de rêve qui possède la
+          passion du travail bien fait avec des matériaux et
+          équipements de qualité supérieure.</p>
+
+        <p>Depuis notre création, nous nous sommes spécialisés
+          dans la pose de carrelage et faïence, en développant
+          un savoir-faire reconnu dans tout le Maroc. Notre
+          engagement envers la qualité et la satisfaction client
+          nous a permis de réaliser des centaines de projets
+          avec succès.</p>
+
+        <p>Chaque projet est unique pour nous, et nous
+          accompagnons nos clients, avec passion, dans la réalisation
+          de leurs rêves en respectant leurs goûts et leurs
+          budgets.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Services -->
+  <div class="section-services">
+    <div class="container">
+      <h1 class="main-title">
+        Entre tradition et innovation, nous faisons plus que vendre : nous inspirons.
+      </h1>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-text">Expertise locale & artisanat authentique</div>
+          <div class="feature-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2M12 8C10.9 8 10 8.9 10 10S10.9 12 12 12 14 11.1 14 10 13.1 8 12 8Z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-text">Large choix de styles et de coloris</div>
+          <div class="feature-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2M21 9V7L15 1L13.5 2.5L16.17 5.17L10.59 10.75C10.21 10.37 9.7 10.17 9.17 10.17S8.13 10.37 7.75 10.75L2.75 15.75C2.37 16.13 2.17 16.64 2.17 17.17S2.37 18.21 2.75 18.59C3.13 18.97 3.64 19.17 4.17 19.17S5.21 18.97 5.59 18.59L10.59 13.59C10.97 13.97 11.48 14.17 12.01 14.17S13.05 13.97 13.43 13.59L19.01 8.01L21.01 10.01L22.51 8.51L21.01 7.01V9.01Z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-text">Disponibilité des produits en temps réel</div>
+          <div class="feature-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-text">Accompagnement et conseils personnalisés</div>
+          <div class="feature-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="categorie-section">
+  <div class="catalog-container">
+    <!-- Header -->
+    <div class="header">
+      <h1 class="title">Votre espace, votre style : choisissez votre univers..</h1>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="product-grid">
+      <div
+        *ngFor="let categorie of currentCategories"
+        class="product-card"
+      >
+        <div class="card-content">
+          <!-- Image Section -->
+          <div class="image-section">
+            <img
+              [src]="categorie.image"
+              [alt]="categorie.nom"
+              class="product-image"
+            />
+          </div>
+
+          <!-- Content Section -->
+          <div class="content-section">
+            <div class="text-content">
+              <h3 class="product-title">{{ categorie.nom }}</h3>
+              <p class="product-description">{{ categorie.description }}</p>
+            </div>
+
+            <!-- CTA Button -->
+            <button
+              class="cta-button"
+              (click)="exploreCategory(categorie.id)"
+            >
+              <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Explorer cette catégorie
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="items-info">
+        Items per page: {{ itemsPerPage }}
+      </div>
+
+      <div class="pagination-controls">
+      <span class="page-info">
+        {{ startIndex + 1 }} – {{ endIndex }} of {{ totalItems }}
+      </span>
+
+        <button
+          class="nav-button"
+          [disabled]="currentPage >= totalPages"
+          (click)="nextPage()"
+        >
+          <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <section class="promotional-section">
+    <!-- Decorative circles -->
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    <div class="decorative-circle circle-3"></div>
+
+    <div class="container-promo">
+      <div class="content">
+        <div class="badge">
+          Des offres exclusives à ne pas manquer !
+        </div>
+
+        <p class="main-text">
+          Profitez de nos promotions saisonnières et restez <br> informés des nouveautés grâce
+          à notre newsletter.
+        </p>
+
+        <button class="cta-button-promo">
+          Découvrez nos promotions
+        </button>
+      </div>
+
+      <div class="image-section-promotion">
+        <img
+          src="assets/pictures/acceuil5.jpg"
+          alt="Personne avec mégaphone"
+          class="promo-image"
+        >
+      </div>
+    </div>
+  </section>
+
+</div>

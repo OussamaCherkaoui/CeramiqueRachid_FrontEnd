@@ -1,0 +1,79 @@
+<div class="contact-container">
+  <!-- Header -->
+  <div class="contact-header">
+    <h2 class="contact-title">Contactez-nous</h2>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="contact-form-wrapper">
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+
+      <!-- Nom et prénom -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>nom et prénom</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          placeholder="Entrez votre nom et prénom"
+          [class.error]="isFieldInvalid('name')">
+        <mat-error *ngIf="isFieldInvalid('name')">
+          {{ getErrorMessage('name') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Numéro de téléphone -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>numéro du téléphone</mat-label>
+        <input
+          matInput
+          formControlName="phone"
+          placeholder="Entrez votre numéro de téléphone"
+          [class.error]="isFieldInvalid('phone')">
+        <mat-error *ngIf="isFieldInvalid('phone')">
+          {{ getErrorMessage('phone') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>email</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="Entrez votre email"
+          [class.error]="isFieldInvalid('email')">
+        <mat-error *ngIf="isFieldInvalid('email')">
+          {{ getErrorMessage('email') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Message -->
+      <mat-form-field appearance="outline" class="form-field message-field">
+        <mat-label>Message</mat-label>
+        <textarea
+          matInput
+          formControlName="message"
+          placeholder="Entrez votre message"
+          rows="6"
+          [class.error]="isFieldInvalid('message')">
+        </textarea>
+        <mat-error *ngIf="isFieldInvalid('message')">
+          {{ getErrorMessage('message') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        type="submit"
+        class="submit-button"
+        [disabled]="contactForm.invalid || isSubmitting">
+        <mat-spinner *ngIf="isSubmitting" diameter="20" class="spinner"></mat-spinner>
+        <span *ngIf="!isSubmitting">Envoyé</span>
+        <span *ngIf="isSubmitting">Envoi en cours...</span>
+      </button>
+
+    </form>
+  </div>
+</div>

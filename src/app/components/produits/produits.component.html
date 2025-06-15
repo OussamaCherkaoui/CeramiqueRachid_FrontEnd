@@ -1,0 +1,80 @@
+<div class="produits-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1 class="page-title">NOS PRODUITS</h1>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div >
+      <mat-label>Rechercher par catégorie...</mat-label>
+    </div>
+    <div>
+       <mat-form-field appearance="outline" class="category-filter">
+       <mat-select [(value)]="selectedCategory" (selectionChange)="filterProducts()">
+         <mat-option value="">Toutes les catégories</mat-option>
+         <mat-option value="Carrelage mural">Carrelage mural</mat-option>
+         <mat-option value="Carrelage sol">Carrelage sol</mat-option>
+         <mat-option value="Mosaïque">Mosaïque</mat-option>
+         <mat-option value="Faïence">Faïence</mat-option>
+       </mat-select>
+       </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="products-grid" *ngIf="paginatedProducts.length > 0">
+    <mat-card class="product-card" *ngFor="let product of paginatedProducts">
+      <div class="card-image-container">
+        <img [src]="product.image" [alt]="product.nom" class="product-image">
+      </div>
+
+      <mat-card-content class="card-content">
+        <div class="product-info">
+          <h3 class="product-name">{{ product.nom }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+
+          <div class="product-details">
+            <div class="category-chip">
+              <mat-chip-listbox>
+                <mat-chip>{{ product.categorie.nom }}</mat-chip>
+              </mat-chip-listbox>
+            </div>
+
+            <div class="price-section">
+              <span class="price-label">Prix :</span>
+              <span class="price-value">{{ product.prix }} DH</span>
+            </div>
+
+            <div class="availability-section">
+              <span class="availability-label">Disponibilité :</span>
+              <span class="availability-status"
+                    [ngClass]="product.quantite > 0 ? 'available' : 'unavailable'">
+                {{ product.quantite > 0 ? 'disponible' : 'épuisé' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- No Products Message -->
+  <div class="no-products" *ngIf="paginatedProducts.length === 0">
+    <mat-icon>search_off</mat-icon>
+    <h3>Aucun produit trouvé</h3>
+    <p>Essayez de modifier vos critères de recherche</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-section" *ngIf="totalProducts > 0">
+    <mat-paginator
+      [length]="totalProducts"
+      [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[6, 12, 24]"
+      [pageIndex]="currentPage"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
