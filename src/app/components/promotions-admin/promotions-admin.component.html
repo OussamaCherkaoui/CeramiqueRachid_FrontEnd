@@ -1,0 +1,126 @@
+<div *ngIf="loading" class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+</div>
+
+<div *ngIf="!loading" class="min-h-screen bg-gray-50">
+  <div class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Gestion des Promotions</h1>
+          <p class="text-sm text-gray-600 mt-1">Gérez vos promotions et offres spéciales</p>
+        </div>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Nouvelle Promotion</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Filtres -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6 grid md:grid-cols-4 gap-4">
+      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="filterPromotions()"
+             placeholder="Rechercher..." class="pl-3 pr-4 py-2 border rounded-lg" />
+      <input type="date" [(ngModel)]="dateDebutFilter" (ngModelChange)="filterPromotions()"
+             class="pl-3 pr-4 py-2 border rounded-lg" />
+      <input type="date" [(ngModel)]="dateFinFilter" (ngModelChange)="filterPromotions()"
+             class="pl-3 pr-4 py-2 border rounded-lg" />
+      <button (click)="clearFilters()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+        Effacer les filtres
+      </button>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid md:grid-cols-4 gap-6 mb-6">
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <p class="text-sm text-gray-600">Total Promotions</p>
+        <p class="text-2xl font-bold text-gray-900">{{ promotions.length }}</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <p class="text-sm text-gray-600">Promotions Actives</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ getPromotionsActives() }}
+        </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <p class="text-sm text-gray-600">À venir</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ getPromotionsAVenir() }}
+        </p>
+      </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <p class="text-sm text-gray-600">Expirées</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ getPromotionsExpirees() }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Tableau des promotions -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b">
+        <h3 class="text-lg font-medium text-gray-900">Promotions ({{ filteredPromotions.length }})</h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Promotion</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produit</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Taux</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Période</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          <tr *ngFor="let p of filteredPromotions" class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="text-sm font-medium text-gray-900">{{ p.titre }}</div>
+              <div class="text-sm text-gray-500">{{ p.description }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm font-medium text-gray-900">{{ p.produit.nom }}</div>
+              <div class="text-sm text-gray-500">{{ p.produit.categorie }} • {{ p.produit.prix }}€</div>
+            </td>
+            <td class="px-6 py-4">
+                <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  -{{ p.taux }}%
+                </span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900">
+              <div>Du {{ formatDate(p.dateDebut) }}</div>
+              <div>Au {{ formatDate(p.dateFin) }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <ng-container [ngSwitch]="getPromotionStatus(p.dateDebut, p.dateFin)">
+                  <span
+                    *ngSwitchCase="getPromotionStatus(p.dateDebut, p.dateFin)"
+                    class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    [ngClass]="getPromotionStatus(p.dateDebut, p.dateFin).color">
+                    {{ getPromotionStatus(p.dateDebut, p.dateFin).status }}
+                  </span>
+              </ng-container>
+            </td>
+            <td class="px-6 py-4 text-right text-sm font-medium">
+              <div class="flex items-center justify-end space-x-2">
+                <button class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="filteredPromotions.length === 0" class="text-center py-12">
+        <i class="fas fa-percentage text-4xl text-gray-400 mb-4"></i>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune promotion trouvée</h3>
+        <p class="mt-1 text-sm text-gray-500">Essayez de modifier vos critères de recherche.</p>
+      </div>
+    </div>
+  </div>
+</div>

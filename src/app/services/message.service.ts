@@ -26,6 +26,7 @@ export class MessageService {
   }
 
   public saveMessage(message: Message): Observable<Message> {
+    console.log(message);
     return this.http.post<Message>(`${this.baseUrl}/save`, message);
   }
 

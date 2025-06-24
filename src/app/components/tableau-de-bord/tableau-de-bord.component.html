@@ -1,0 +1,145 @@
+<!-- Content Area -->
+<main class="content-area">
+  <div class="part">
+    <div class="part1">
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card admin" *ngIf="stats">
+          <div class="stat-header">
+            <span class="stat-title">Admin enregistré</span>
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+          </div>
+          <div class="stat-number">{{ formatNumber(stats.adminCount) }}</div>
+          <div class="stat-label">Administrateurs actifs</div>
+        </div>
+
+        <div class="stat-card orders">
+          <div class="stat-header">
+            <span class="stat-title">Commande d'aujourd'hui</span>
+            <div class="stat-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+          </div>
+          <div class="stat-number">{{ formatNumber(stats.todayOrders) }}</div>
+          <div class="stat-label">Nouvelles commandes</div>
+        </div>
+
+        <div class="stat-card promo">
+          <div class="stat-header">
+            <span class="stat-title">Promotion active</span>
+            <div class="toggle-switch"
+                 [class.active]="isToggled"
+                 (click)="onToggleSwitch($event.target)"></div>
+          </div>
+          <div class="stat-number">{{ formatNumber(stats.activePromotions) }}</div>
+          <div class="stat-label">Promotions en cours</div>
+        </div>
+
+        <div class="stat-card messages">
+          <div class="stat-header">
+            <span class="stat-title">Message</span>
+            <div class="stat-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+          </div>
+          <div class="stat-number">{{ formatNumber(stats.unreadMessages) }}</div>
+          <div class="stat-label">Messages non lus</div>
+        </div>
+      </div>
+    </div>
+    <div class="part2">
+      <!-- Calendar Section -->
+      <div class="calendar-section">
+        <div class="calendar-header">
+          <h3 class="calendar-title">Calendrier - {{ currentMonth }}</h3>
+          <div class="calendar-nav">
+            <button (click)="onPreviousMonth()" type="button">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button (click)="onNextMonth()" type="button">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="calendar-grid">
+          <!-- Calendar Headers -->
+          <div class="calendar-day header"
+               *ngFor="let header of calendarHeaders">
+            {{ header }}
+          </div>
+
+          <!-- Empty cells for proper calendar alignment -->
+          <div class="calendar-day" *ngFor="let empty of [1,2,3,4]"></div>
+
+          <!-- Calendar Days -->
+          <div class="calendar-day"
+               *ngFor="let day of calendarDays"
+               [class.active]="isDaySelected(day)"
+               (click)="onDayClick(day,$event)">
+            {{ day }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div>
+    <!-- Chart Section with Chart.js -->
+    <div class="chart-section">
+      <h3 class="chart-title">Analyse des Souscriptions: Distribution par Types</h3>
+
+      <!-- Chart Container -->
+      <div class="chart-container">
+        <canvas #chartCanvas
+                class="chart-canvas"
+                [attr.id]="chartId">
+        </canvas>
+
+        <!-- Loading State -->
+        <div class="chart-loading" *ngIf="isChartLoading">
+          Chargement du graphique...
+        </div>
+      </div>
+
+      <!-- Chart Legend -->
+      <div class="chart-legend" *ngIf="!isChartLoading">
+        <div class="chart-legend-item">
+          <div class="chart-legend-color"
+               style="background: linear-gradient(135deg, #ff6b9d, #ff8fb3);"></div>
+          <span>Mensuel ({{ chartData.monthly }})</span>
+        </div>
+        <div class="chart-legend-item">
+          <div class="chart-legend-color"
+               style="background: linear-gradient(135deg, #4facfe, #00f2fe);"></div>
+          <span>Annuel ({{ chartData.annually }})</span>
+        </div>
+      </div>
+
+      <!-- Chart Controls -->
+      <div class="chart-controls" style="margin-top: 20px; text-align: center;">
+        <button class="btn btn-outline-primary"
+                (click)="updateChartData()"
+                [disabled]="isChartLoading">
+          <i class="fas fa-sync-alt"></i>
+          Actualiser les données
+        </button>
+
+        <select class="form-select"
+                style="margin-left: 10px; display: inline-block; width: auto;"
+                [(ngModel)]="selectedChartType"
+                (change)="changeChartType()">
+          <option value="bar">Barres</option>
+          <option value="pie">Camembert</option>
+          <option value="doughnut">Anneau</option>
+          <option value="line">Ligne</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+</main>

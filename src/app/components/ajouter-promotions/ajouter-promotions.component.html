@@ -1,0 +1,114 @@
+<div class="modal-overlay" (click)="closeForm()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Modifier la promotion' : 'Nouvelle promotion' }}</h3>
+      <button class="close-button" (click)="closeForm()">×</button>
+    </div>
+
+    <form [formGroup]="promotionForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="titre">Titre *</label>
+          <input
+            type="text"
+            id="titre"
+            formControlName="titre"
+            [class.error]="isFieldInvalid('titre')"
+            placeholder="Titre de la promotion"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('titre')">
+            {{ getFieldError('titre') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            [class.error]="isFieldInvalid('description')"
+            placeholder="Description de la promotion"
+            rows="3"
+          ></textarea>
+          <div class="error-message" *ngIf="isFieldInvalid('description')">
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="produitId">Produit *</label>
+          <select
+            id="produitId"
+            formControlName="produitId"
+            [class.error]="isFieldInvalid('produitId')"
+          >
+            <option value="">Sélectionner un produit</option>
+            <option *ngFor="let product of availableProducts" [value]="product.id">
+              {{ product.nom }} - {{ product.prix }}€
+            </option>
+          </select>
+          <div class="error-message" *ngIf="isFieldInvalid('produitId')">
+            {{ getFieldError('produitId') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="taux">Taux de réduction (%) *</label>
+          <input
+            type="number"
+            id="taux"
+            formControlName="taux"
+            [class.error]="isFieldInvalid('taux')"
+            placeholder="Ex: 15"
+            min="1"
+            max="100"
+          >
+          <div class="error-message" *ngIf="isFieldInvalid('taux')">
+            {{ getFieldError('taux') }}
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="dateDebut">Date de début *</label>
+            <input
+              type="date"
+              id="dateDebut"
+              formControlName="dateDebut"
+              [class.error]="isFieldInvalid('dateDebut')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('dateDebut')">
+              {{ getFieldError('dateDebut') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dateFin">Date de fin *</label>
+            <input
+              type="date"
+              id="dateFin"
+              formControlName="dateFin"
+              [class.error]="isFieldInvalid('dateFin')"
+            >
+            <div class="error-message" *ngIf="isFieldInvalid('dateFin')">
+              {{ getFieldError('dateFin') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="promotionForm.invalid || isSubmitting"
+        >
+          {{ isSubmitting ? 'Enregistrement...' : isEditMode ? 'Modifier' : 'Créer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

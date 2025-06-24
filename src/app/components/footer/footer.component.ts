@@ -16,15 +16,12 @@ export class FooterComponent {
   excludedRoutes: string[] = [
     '/seConnecter',
     '/administration',
-    '/admin/dashboard',
-    '/admin/events',
-    '/admin/events/addEvent',
-    '/admin/spaces',
-    '/admin/spaces/ourSpaces',
-    '/admin/spaces/reservations',
-    '/admin/spaces/ourSpaces/addSpace',
-    '/admin/spaces/ourSpaces/updateSpace/id',
-    '/admin/subscriptions'
+    '/administration/commandes',
+    '/administration/produits',
+    '/administration/promotions',
+    '/administration/messages',
+    '/administration/spaces/ourSpaces',
+    '/administration/ajouterAdmin'
   ];
 
   constructor(protected router: Router) {}

@@ -1,0 +1,202 @@
+<!-- produits.component.html -->
+<div class="p-6 bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Gestion des Produits</h1>
+    <p class="text-gray-600">Gérez vos produits et catégories</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mb-6">
+    <div class="flex space-x-1 bg-white p-1 rounded-lg shadow-sm">
+      <button
+        (click)="onTabChange('produits')"
+        [class]="'px-4 py-2 rounded-md transition-colors flex items-center space-x-2 ' +
+                 (activeTab === 'produits' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100')"
+      >
+        <i class="fas fa-box"></i>
+        <span>Produits</span>
+      </button>
+      <button
+        (click)="onTabChange('categories')"
+        [class]="'px-4 py-2 rounded-md transition-colors flex items-center space-x-2 ' +
+                 (activeTab === 'categories' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100')"
+      >
+        <i class="fas fa-tags"></i>
+        <span>Catégories</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Section Produits -->
+  <div *ngIf="activeTab === 'produits'">
+    <!-- Contrôles de filtrage -->
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+      <div class="flex flex-wrap gap-4 items-center">
+        <!-- Recherche -->
+        <div class="flex-1 min-w-64">
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input
+              type="text"
+              placeholder="Rechercher un produit..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+              class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Filtre par catégorie -->
+        <select
+          [(ngModel)]="selectedCategoryId"
+          (change)="onCategoryFilterChange()"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option [value]="null">Toutes les catégories</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ category.nom }}
+          </option>
+        </select>
+
+        <!-- Stock faible -->
+        <button
+          (click)="onToggleLowStock()"
+          [class]="'px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors ' +
+                   (showLowStock ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300')"
+        >
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Stock faible</span>
+        </button>
+
+        <!-- Ajouter produit -->
+        <button
+          (click)="onAjouterProduit()"
+          class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2"
+        >
+          <i class="fas fa-plus"></i>
+          <span>Ajouter Produit</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Liste des produits -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div
+        *ngFor="let produit of filteredProduits"
+        class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+      >
+        <!-- Image -->
+        <div class="h-48 bg-gray-200 relative">
+          <img
+            [src]="produit.image"
+            [alt]="produit.nom"
+            class="w-full h-full object-cover"
+          />
+          <div
+            *ngIf="getStockBadge(produit.quantite)"
+            [class]="'absolute top-2 right-2 text-white px-2 py-1 rounded-full text-xs font-semibold ' +
+                     getStockBadgeClass(produit.quantite)"
+          >
+            {{ getStockBadge(produit.quantite) }}
+          </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-800 mb-1">{{ produit.nom }}</h3>
+          <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ produit.description }}</p>
+
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-lg font-bold text-blue-600">{{ produit.prix }} DH</span>
+            <span class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">
+              {{ produit.categorie.nom }}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between mb-4">
+            <span [class]="'text-sm font-medium ' + getStockClass(produit.quantite)">
+              Stock: {{ produit.quantite }}
+            </span>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex space-x-2">
+            <button
+              (click)="onModifierProduit(produit)"
+              class="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
+            >
+              <i class="fas fa-edit"></i>
+              <span>Modifier</span>
+            </button>
+            <button
+              (click)="onSupprimerProduit(produit)"
+              class="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
+            >
+              <i class="fas fa-trash"></i>
+              <span>Supprimer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message si aucun produit -->
+    <div *ngIf="filteredProduits.length === 0" class="text-center py-12">
+      <i class="fas fa-box text-6xl text-gray-400 mb-4"></i>
+      <p class="text-gray-500">Aucun produit trouvé</p>
+    </div>
+  </div>
+
+  <!-- Section Catégories -->
+  <div *ngIf="activeTab === 'categories'">
+    <!-- Header catégories -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-semibold text-gray-800">Gestion des Catégories</h2>
+      <button
+        (click)="onAjouterCategorie()"
+        class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2"
+      >
+        <i class="fas fa-plus"></i>
+        <span>Ajouter Catégorie</span>
+      </button>
+    </div>
+
+    <!-- Liste des catégories -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        *ngFor="let categorie of categories"
+        class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-800 mb-2">{{ categorie.nom }}</h3>
+            <p class="text-gray-600 mb-4">{{ categorie.description }}</p>
+          </div>
+          <i class="fas fa-tag text-2xl text-blue-500"></i>
+        </div>
+
+        <div class="text-sm text-gray-500 mb-4">
+          {{ getProduitsCountByCategory(categorie.id) }} produit(s)
+        </div>
+
+        <div class="flex space-x-2">
+          <button
+            (click)="onModifierCategorie(categorie)"
+            class="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
+          >
+            <i class="fas fa-edit"></i>
+            <span>Modifier</span>
+          </button>
+          <button
+            (click)="onSupprimerCategorie(categorie)"
+            class="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
+          >
+            <i class="fas fa-trash"></i>
+            <span>Supprimer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

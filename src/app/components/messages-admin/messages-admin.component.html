@@ -1,0 +1,77 @@
+<mat-card class="messages-container">
+  <mat-card-title>Boîte de réception</mat-card-title>
+  <mat-card-content>
+
+    <!-- Filtres -->
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Date d’envoi min</mat-label>
+        <input matInput type="date" [(ngModel)]="dateMin" (change)="filtrerMessages()">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date d’envoi max</mat-label>
+        <input matInput type="date" [(ngModel)]="dateMax" (change)="filtrerMessages()">
+      </mat-form-field>
+
+      <mat-checkbox [(ngModel)]="showOnlyUnanswered" (change)="filtrerMessages()">
+        Uniquement non répondu
+      </mat-checkbox>
+    </div>
+
+    <!-- Table -->
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 full-width">
+
+      <!-- Colonnes -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let m"> {{ m.id }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nomEtPrenom">
+        <th mat-header-cell *matHeaderCellDef> Nom </th>
+        <td mat-cell *matCellDef="let m"> {{ m.nomEtPrenom }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let m"> {{ m.email }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="message">
+        <th mat-header-cell *matHeaderCellDef> Message </th>
+        <td mat-cell *matCellDef="let m"> {{ m.message }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dateEnvoi">
+        <th mat-header-cell *matHeaderCellDef> Date d’envoi </th>
+        <td mat-cell *matCellDef="let m"> {{ m.dateEnvoi | date:'shortDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="repondu">
+        <th mat-header-cell *matHeaderCellDef> Répondu </th>
+        <td mat-cell *matCellDef="let m">
+          <mat-chip [color]="m.estRepondue ? 'primary' : 'warn'" selected>
+            {{ m.estRepondue ? 'Oui' : 'Non' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let m">
+          <button mat-icon-button color="primary" (click)="marquerRepondu(m.id)" [disabled]="m.estRepondue">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="supprimer(m.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header & Row -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

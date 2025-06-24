@@ -1,0 +1,65 @@
+<div class="admin-container">
+  <mat-card class="admin-form-card">
+    <mat-card-title>Ajouter un Administrateur</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="ajouterAdmin()" class="form-grid" #adminForm="ngForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
+          <input matInput required [(ngModel)]="newAdmin.username" name="username">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input matInput type="email" required [(ngModel)]="newAdmin.email" name="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input matInput type="password" required [(ngModel)]="newAdmin.password" name="password">
+        </mat-form-field>
+
+        <div class="button-container">
+          <button mat-flat-button color="primary" type="submit">Ajouter</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="admin-table-card">
+    <mat-card-title>Liste des Admins</mat-card-title>
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 full-width">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let admin">{{ admin.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Nom d'utilisateur</th>
+          <td mat-cell *matCellDef="let admin">{{ admin.username }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let admin">{{ admin.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let admin">
+            <button mat-icon-button color="warn" (click)="supprimerAdmin(admin.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

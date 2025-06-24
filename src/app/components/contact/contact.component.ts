@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
-import {NgIf} from "@angular/common";
+import {getLocaleDateFormat, NgIf} from "@angular/common";
 import {MatButton} from "@angular/material/button";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {Message} from "../../models/message";
+import {MessageService} from "../../services/message.service";
 
 @Component({
   selector: 'app-contact',
@@ -26,7 +28,8 @@ export class ContactComponent {
   contactForm: FormGroup;
   isSubmitting = false;
 
-  constructor(private formBuilder: FormBuilder) {
+
+  constructor(private formBuilder: FormBuilder,private messageService:MessageService ) {
     this.contactForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
@@ -41,12 +44,23 @@ export class ContactComponent {
     if (this.contactForm.valid) {
       this.isSubmitting = true;
 
-      // Simuler l'envoi du formulaire
+      const formValue = this.contactForm.value;
+      const message:Message={id:0,nomEtPrenom:formValue.name,telephone:formValue.phone,email:formValue.email,message:formValue.message,dateEnvoi:new Date(Date.now()),dateReponse:new Date(Date.now()),estRepondue:false,
+        admin: {
+          id: 0,
+          username: '',
+          password: '',
+          email: ''
+        }};
+
       setTimeout(() => {
-        console.log('Formulaire envoyé:', this.contactForm.value);
         this.isSubmitting = false;
         this.contactForm.reset();
-        // Ici vous pouvez ajouter la logique d'envoi réel
+        this.messageService.saveMessage(message).subscribe(response=>{
+          if (response){
+            console.log(response);
+          }
+        })
       }, 2000);
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs

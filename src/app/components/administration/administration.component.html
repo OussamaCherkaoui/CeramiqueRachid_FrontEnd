@@ -15,7 +15,7 @@
     <nav class="nav">
       <ul>
         <li>
-          <a href="#" class="nav-item active">
+          <a routerLink="/administration" [class.active]="isActive('/administration')" class="nav-item">
             <div class="nav-icon">
               <i class="fas fa-th-large"></i>
             </div>
@@ -23,7 +23,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/administration/commandes" [class.active]="isActive('/administration/commandes')" class="nav-item">
             <div class="nav-icon">
               <i class="fas fa-shopping-cart"></i>
             </div>
@@ -31,7 +31,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/administration/produits" class="nav-item" [class.active]="isActive('/administration/produits')">
             <div class="nav-icon">
               <i class="fas fa-box"></i>
             </div>
@@ -39,7 +39,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/administration/promotions" class="nav-item" [class.active]="isActive('/administration/promotions')">
             <div class="nav-icon">
               <i class="fas fa-bullhorn"></i>
             </div>
@@ -47,7 +47,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/administration/ajouterAdmin" class="nav-item" [class.active]="isActive('/administration/ajouterAdmin')">
             <div class="nav-icon">
               <i class="fas fa-user-plus"></i>
             </div>
@@ -55,7 +55,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/administration/messages" class="nav-item" [class.active]="isActive('/administration/messages')">
             <div class="nav-icon">
               <i class="fas fa-envelope"></i>
             </div>
@@ -63,7 +63,7 @@
           </a>
         </li>
         <li>
-          <a href="#" class="nav-item">
+          <a routerLink="/" class="nav-item">
             <div class="nav-icon">
               <i class="fas fa-home"></i>
             </div>
@@ -97,12 +97,7 @@
     <main class="content-area">
       <!-- Ici sera injecté le contenu des routes enfants -->
       <div class="content-placeholder">
-        <!-- <router-outlet></router-outlet> -->
-        <div class="placeholder-content">
-          <div class="placeholder-icon">📄</div>
-          <p class="placeholder-title">Contenu de la route enfant</p>
-          <p class="placeholder-subtitle">Le contenu sera affiché via &lt;router-outlet&gt;&lt;/router-outlet&gt;</p>
-        </div>
+        <router-outlet></router-outlet>
       </div>
     </main>
   </div>

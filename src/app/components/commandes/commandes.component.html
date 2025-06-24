@@ -1,0 +1,296 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- En-tête -->
+  <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Gestion des Commandes</h1>
+        <p class="text-gray-600 mt-1">Gérez toutes vos commandes clients</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-50 px-4 py-2 rounded-lg">
+          <span class="text-blue-700 font-semibold">{{ filteredCommandes.length }}</span>
+          <span class="text-blue-600 ml-1">commandes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section de recherche et filtres -->
+  <div class="bg-white mx-6 mt-6 rounded-lg shadow-sm border border-gray-200">
+    <div class="p-6">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <!-- Recherche par date -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-calendar mr-1"></i>
+            Rechercher par date
+          </label>
+          <input
+            type="date"
+            [(ngModel)]="searchDate"
+            (ngModelChange)="filterCommandes()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Filtre par statut -->
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-filter mr-1"></i>
+            Filtrer par statut
+          </label>
+          <select
+            [(ngModel)]="searchStatut"
+            (ngModelChange)="filterCommandes()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="tous">Tous les statuts</option>
+            <option value="validee">Validées</option>
+            <option value="en_attente">En attente</option>
+          </select>
+        </div>
+
+        <!-- Bouton de réinitialisation -->
+        <div class="flex items-end">
+          <button
+            (click)="resetFilters()"
+            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Réinitialiser
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des commandes -->
+  <div class="bg-white mx-6 mt-6 rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h2 class="text-lg font-semibold text-gray-900">Liste des Commandes</h2>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            ID
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Date
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Client
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Total
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Statut
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Admin
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Actions
+          </th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let commande of filteredCommandes" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            #{{ commande.id }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ formatDate(commande.dateCommande) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {{ commande.client }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+            {{ formatPrice(commande.total) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    [class]="commande.statut
+                      ? 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800'
+                      : 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800'"
+                  >
+                    {{ commande.statut ? 'Validée' : 'En attente' }}
+                  </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            {{ commande.admin.username }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+              <button
+                (click)="editCommande(commande)"
+                class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                title="Modifier"
+              >
+                <i class="fas fa-edit w-4 h-4"></i>
+              </button>
+              <button
+                (click)="deleteCommande(commande.id)"
+                class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                title="Supprimer"
+              >
+                <i class="fas fa-trash w-4 h-4"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Message si aucune commande -->
+    <div *ngIf="filteredCommandes.length === 0" class="text-center py-12">
+      <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune commande trouvée</h3>
+      <p class="mt-1 text-sm text-gray-500">
+        Essayez de modifier vos critères de recherche.
+      </p>
+    </div>
+  </div>
+
+  <!-- Bouton d'ajout -->
+  <div class="mx-6 mt-6 mb-6">
+    <button
+      (click)="showAddModal = true"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2 transition-colors shadow-sm"
+    >
+      <i class="fas fa-plus w-5 h-5"></i>
+      <span>Ajouter une commande</span>
+    </button>
+  </div>
+
+  <!-- Modal d'ajout -->
+  <div *ngIf="showAddModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">Ajouter une nouvelle commande</h3>
+
+      <form (ngSubmit)="addCommande()" #addForm="ngForm">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Client</label>
+          <input
+            type="text"
+            [(ngModel)]="newCommande.client"
+            name="client"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Nom du client"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Total</label>
+          <input
+            type="number"
+            [(ngModel)]="newCommande.total"
+            name="total"
+            required
+            min="0"
+            step="0.01"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+          <select
+            [(ngModel)]="newCommande.statut"
+            name="statut"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option [value]="false">En attente</option>
+            <option [value]="true">Validée</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            (click)="closeAddModal()"
+            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            [disabled]="!addForm.valid"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          >
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de modification -->
+  <div *ngIf="showEditModal && selectedCommande" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <h3 class="text-lg font-semibold mb-4">
+        Modifier la commande #{{ selectedCommande.id }}
+      </h3>
+
+      <form (ngSubmit)="updateCommande()" #editForm="ngForm">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Client</label>
+          <input
+            type="text"
+            [(ngModel)]="selectedCommande.client"
+            name="client"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Total</label>
+          <input
+            type="number"
+            [(ngModel)]="selectedCommande.total"
+            name="total"
+            required
+            min="0"
+            step="0.01"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+          <select
+            [(ngModel)]="selectedCommande.statut"
+            name="statut"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option [value]="false">En attente</option>
+            <option [value]="true">Validée</option>
+          </select>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            (click)="closeEditModal()"
+            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            [disabled]="!editForm.valid"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          >
+            Modifier
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

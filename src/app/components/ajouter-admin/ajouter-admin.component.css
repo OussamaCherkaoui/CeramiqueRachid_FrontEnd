@@ -1,0 +1,28 @@
+.admin-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-form-card,
+.admin-table-card {
+  padding: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.button-container {
+  grid-column: span 3;
+  text-align: right;
+}
+
+.full-width {
+  width: 100%;
+}
