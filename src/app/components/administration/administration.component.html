@@ -51,7 +51,7 @@
             <div class="nav-icon">
               <i class="fas fa-user-plus"></i>
             </div>
-            <span>Ajouté un admin</span>
+            <span>Gestion admin</span>
           </a>
         </li>
         <li>
@@ -79,13 +79,13 @@
     <!-- Top Navigation Bar -->
     <header class="header">
       <div class="header-container">
-        <h1>Tableau de bord</h1>
+        <h1>Céramique Rachid</h1>
         <div class="header-buttons">
           <button class="btn btn-outline">
             <i class="fas fa-user"></i>
-            Admin
+            {{ username }}
           </button>
-          <button class="btn btn-dark">
+          <button (click)="logout()" class="btn btn-dark">
             <i class="fas fa-sign-out-alt"></i>
             Se déconnecter
           </button>

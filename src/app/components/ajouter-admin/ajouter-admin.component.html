@@ -2,23 +2,23 @@
   <mat-card class="admin-form-card">
     <mat-card-title>Ajouter un Administrateur</mat-card-title>
     <mat-card-content>
-      <form (ngSubmit)="ajouterAdmin()" class="form-grid" #adminForm="ngForm">
+      <form (ngSubmit)="ajouterAdmin()" class="form-grid" [formGroup]="adminForm" >
         <mat-form-field appearance="outline">
           <mat-label>Nom d'utilisateur</mat-label>
           <mat-icon matPrefix>person</mat-icon>
-          <input matInput required [(ngModel)]="newAdmin.username" name="username">
+          <input matInput required formControlName="username" name="username">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <mat-icon matPrefix>email</mat-icon>
-          <input matInput type="email" required [(ngModel)]="newAdmin.email" name="email">
+          <input matInput type="email" formControlName="email" name="email">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Mot de passe</mat-label>
           <mat-icon matPrefix>lock</mat-icon>
-          <input matInput type="password" required [(ngModel)]="newAdmin.password" name="password">
+          <input matInput type="password" required formControlName="password" name="password">
         </mat-form-field>
 
         <div class="button-container">

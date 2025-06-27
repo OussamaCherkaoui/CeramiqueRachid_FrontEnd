@@ -2,12 +2,14 @@ import {Component, HostListener, OnInit} from '@angular/core';
 
 import {Categorie} from "../../models/categorie";
 import {NgForOf} from "@angular/common";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-acceuil',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    RouterLink
   ],
   templateUrl: './acceuil.component.html',
   styleUrl: './acceuil.component.css'

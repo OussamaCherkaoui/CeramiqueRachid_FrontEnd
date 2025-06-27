@@ -4,14 +4,14 @@
     <div class="part1">
       <!-- Stats Grid -->
       <div class="stats-grid">
-        <div class="stat-card admin" *ngIf="stats">
+        <div class="stat-card admin">
           <div class="stat-header">
             <span class="stat-title">Admin enregistré</span>
             <div class="stat-icon">
               <i class="fas fa-users"></i>
             </div>
           </div>
-          <div class="stat-number">{{ formatNumber(stats.adminCount) }}</div>
+          <div class="stat-number">{{ formatNumber( adminCount) }}</div>
           <div class="stat-label">Administrateurs actifs</div>
         </div>
 
@@ -22,7 +22,7 @@
               <i class="fas fa-shopping-cart"></i>
             </div>
           </div>
-          <div class="stat-number">{{ formatNumber(stats.todayOrders) }}</div>
+          <div class="stat-number">{{ formatNumber( todayOrders) }}</div>
           <div class="stat-label">Nouvelles commandes</div>
         </div>
 
@@ -33,7 +33,7 @@
                  [class.active]="isToggled"
                  (click)="onToggleSwitch($event.target)"></div>
           </div>
-          <div class="stat-number">{{ formatNumber(stats.activePromotions) }}</div>
+          <div class="stat-number">{{ formatNumber( activePromotions) }}</div>
           <div class="stat-label">Promotions en cours</div>
         </div>
 
@@ -44,7 +44,7 @@
               <i class="fas fa-envelope"></i>
             </div>
           </div>
-          <div class="stat-number">{{ formatNumber(stats.unreadMessages) }}</div>
+          <div class="stat-number">{{ formatNumber( unreadMessages) }}</div>
           <div class="stat-label">Messages non lus</div>
         </div>
       </div>

@@ -1,0 +1,358 @@
+<div class="container">
+  <!-- Toolbar Header -->
+  <mat-toolbar class="header-toolbar">
+    <button mat-icon-button (click)="onCancel()" matTooltip="Retour à la liste">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="header-spacer"></span>
+    <div class="header-content">
+      <h1 class="header-title">Ajouter un nouveau produit</h1>
+      <p class="header-subtitle">Remplissez les informations du produit</p>
+    </div>
+    <span class="header-spacer"></span>
+  </mat-toolbar>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <mat-card class="form-card">
+      <mat-card-content>
+        <!-- Stepper -->
+        <mat-stepper #stepper orientation="horizontal" linear="false" class="product-stepper">
+
+          <!-- Étape 1: Informations de base -->
+          <mat-step [stepControl]="basicInfoForm" label="Informations de base" state="info">
+            <ng-template matStepLabel>
+              <mat-icon>info</mat-icon>
+              Informations de base
+            </ng-template>
+
+            <form [formGroup]="basicInfoForm" class="step-form">
+              <div class="form-section">
+                <h3 class="section-title">
+                  <mat-icon class="section-icon">inventory_2</mat-icon>
+                  Détails du produit
+                </h3>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nom du produit</mat-label>
+                    <input matInput
+                           formControlName="nom"
+                           placeholder="Saisissez le nom du produit"
+                           required>
+                    <mat-icon matSuffix>title</mat-icon>
+                    <mat-error *ngIf="nom?.invalid">{{getErrorMessage('nom')}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput
+                              formControlName="description"
+                              placeholder="Décrivez votre produit en détail..."
+                              rows="4"
+                              required></textarea>
+                    <mat-icon matSuffix>description</mat-icon>
+                    <mat-error *ngIf="description?.invalid">{{getErrorMessage('description')}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Catégorie</mat-label>
+                    <mat-select formControlName="categorieId" required>
+                      <mat-option *ngFor="let category of categories" [value]="category.id">
+                        <mat-icon>category</mat-icon>
+                        {{ category.nom }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>category</mat-icon>
+                    <mat-error *ngIf="categorieId?.invalid">{{getErrorMessage('categorieId')}}</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button mat-raised-button
+                        color="primary"
+                        matStepperNext
+                        [disabled]="basicInfoForm.invalid">
+                  <mat-icon>navigate_next</mat-icon>
+                  Suivant
+                </button>
+              </div>
+            </form>
+          </mat-step>
+
+          <!-- Étape 2: Prix et Stock -->
+          <mat-step [stepControl]="priceStockForm" label="Prix et Stock" state="attach_money">
+            <ng-template matStepLabel>
+              <mat-icon>attach_money</mat-icon>
+              Prix et Stock
+            </ng-template>
+
+            <form [formGroup]="priceStockForm" class="step-form">
+              <div class="form-section">
+                <h3 class="section-title">
+                  <mat-icon class="section-icon">monetization_on</mat-icon>
+                  Informations commerciales
+                </h3>
+
+                <div class="form-row-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Prix (DH)</mat-label>
+                    <input matInput
+                           type="number"
+                           formControlName="prix"
+                           step="0.01"
+                           min="0"
+                           placeholder="0.00"
+                           required>
+                    <span matSuffix>DH</span>
+                    <mat-icon matPrefix>attach_money</mat-icon>
+                    <mat-error *ngIf="prix?.invalid">{{getErrorMessage('prix')}}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Quantité en stock</mat-label>
+                    <input matInput
+                           type="number"
+                           formControlName="quantite"
+                           min="0"
+                           placeholder="0"
+                           required>
+                    <mat-icon matPrefix>inventory</mat-icon>
+                    <mat-error *ngIf="quantite?.invalid">{{getErrorMessage('quantite')}}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <!-- Indicateurs visuels -->
+                <div class="info-chips" *ngIf="priceStockForm.valid">
+                  <mat-chip-listbox>
+                    <mat-chip-option [ngClass]="{'low-stock': quantite?.value <= 5, 'good-stock': quantite?.value > 5}">
+                      <mat-icon matChipAvatar>
+                        {{ quantite?.value <= 5 ? 'warning' : 'check_circle' }}
+                      </mat-icon>
+                      Stock: {{ quantite?.value || 0 }} unités
+                    </mat-chip-option>
+                    <mat-chip-option class="price-chip">
+                      <mat-icon matChipAvatar>local_offer</mat-icon>
+                      Prix: {{ prix?.value || 0 }} DH
+                    </mat-chip-option>
+                  </mat-chip-listbox>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>
+                  <mat-icon>navigate_before</mat-icon>
+                  Précédent
+                </button>
+                <button mat-raised-button
+                        color="primary"
+                        matStepperNext
+                        [disabled]="priceStockForm.invalid">
+                  <mat-icon>navigate_next</mat-icon>
+                  Suivant
+                </button>
+              </div>
+            </form>
+          </mat-step>
+
+          <!-- Étape 3: Image -->
+          <mat-step [stepControl]="imageForm" label="Image" state="image">
+            <ng-template matStepLabel>
+              <mat-icon>image</mat-icon>
+              Image
+            </ng-template>
+
+            <form [formGroup]="imageForm" class="step-form">
+              <div class="form-section">
+                <h3 class="section-title">
+                  <mat-icon class="section-icon">photo_camera</mat-icon>
+                  Image du produit
+                </h3>
+
+                <!-- Zone d'upload -->
+                <div class="image-upload-section">
+                  <div class="upload-area"
+                       [class.has-image]="imagePreview"
+                       (dragover)="$event.preventDefault()"
+                       (drop)="$event.preventDefault()">
+
+                    <!-- Zone sans image -->
+                    <div *ngIf="!imagePreview" class="upload-placeholder">
+                      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                      <h4>Télécharger une image</h4>
+                      <p class="upload-text">PNG, JPG, GIF jusqu'à 10MB</p>
+                      <p class="upload-instruction">Glissez-déposez ou cliquez pour sélectionner</p>
+
+                      <input type="file"
+                             id="fileInput"
+                             (change)="onFileSelected($event)"
+                             accept="image/*"
+                             hidden>
+
+                      <button mat-raised-button
+                              color="primary"
+                              type="button"
+                              (click)="document.getElementById('fileInput')?.click()">
+                        <mat-icon>add_photo_alternate</mat-icon>
+                        Choisir un fichier
+                      </button>
+                    </div>
+
+                    <!-- Aperçu image -->
+                    <div *ngIf="imagePreview" class="image-preview">
+                      <img [src]="imagePreview" alt="Aperçu du produit" class="preview-image">
+
+                      <div class="image-actions">
+                        <button mat-fab
+                                color="primary"
+                                (click)="document.getElementById('fileInput')?.click()"
+                                matTooltip="Changer l'image">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+
+                        <button mat-fab
+                                color="warn"
+                                (click)="removeImage()"
+                                matTooltip="Supprimer l'image">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+
+                      <input type="file"
+                             id="fileInput"
+                             (change)="onFileSelected($event)"
+                             accept="image/*"
+                             hidden>
+                    </div>
+                  </div>
+
+                  <!-- Conseils -->
+                  <mat-card class="tips-card">
+                    <mat-card-header>
+                      <mat-icon mat-card-avatar>lightbulb</mat-icon>
+                      <mat-card-title>Conseils pour une bonne image</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <ul class="tips-list">
+                        <li><mat-icon>check</mat-icon> Utilisez une image de haute qualité</li>
+                        <li><mat-icon>check</mat-icon> Privilégiez un fond neutre</li>
+                        <li><mat-icon>check</mat-icon> Assurez-vous que le produit soit bien visible</li>
+                        <li><mat-icon>check</mat-icon> Format recommandé : 1:1 (carré)</li>
+                      </ul>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button mat-button matStepperPrevious>
+                  <mat-icon>navigate_before</mat-icon>
+                  Précédent
+                </button>
+                <button mat-raised-button
+                        color="primary"
+                        matStepperNext>
+                  <mat-icon>navigate_next</mat-icon>
+                  Finaliser
+                </button>
+              </div>
+            </form>
+          </mat-step>
+
+          <!-- Étape 4: Confirmation -->
+          <mat-step label="Confirmation" state="done">
+            <ng-template matStepLabel>
+              <mat-icon>done</mat-icon>
+              Confirmation
+            </ng-template>
+
+            <div class="confirmation-section">
+              <div class="confirmation-header">
+                <mat-icon class="confirmation-icon">preview</mat-icon>
+                <h3>Récapitulatif du produit</h3>
+                <p>Vérifiez les informations avant de confirmer l'ajout</p>
+              </div>
+
+              <mat-card class="summary-card">
+                <mat-card-content>
+                  <div class="summary-grid">
+                    <div class="summary-item">
+                      <div class="summary-label">
+                        <mat-icon>title</mat-icon>
+                        Nom
+                      </div>
+                      <div class="summary-value">{{ basicInfoForm.get('nom')?.value }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                      <div class="summary-label">
+                        <mat-icon>description</mat-icon>
+                        Description
+                      </div>
+                      <div class="summary-value">{{ basicInfoForm.get('description')?.value }}</div>
+                    </div>
+
+                    <div class="summary-item">
+                      <div class="summary-label">
+                        <mat-icon>category</mat-icon>
+                        Catégorie
+                      </div>
+                    </div>
+
+                    <div class="summary-item">
+                      <div class="summary-label">
+                        <mat-icon>attach_money</mat-icon>
+                        Prix
+                      </div>
+                      <div class="summary-value price">{{ priceStockForm.get('prix')?.value }} DH</div>
+                    </div>
+
+                    <div class="summary-item">
+                      <div class="summary-label">
+                        <mat-icon>inventory</mat-icon>
+                        Stock
+                      </div>
+                      <div class="summary-value">{{ priceStockForm.get('quantite')?.value }} unités</div>
+                    </div>
+
+                    <div class="summary-item full-width" *ngIf="imagePreview">
+                      <div class="summary-label">
+                        <mat-icon>image</mat-icon>
+                        Image
+                      </div>
+                      <div class="summary-image">
+                        <img [src]="imagePreview" alt="Aperçu" class="summary-preview">
+                      </div>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+
+              <div class="step-actions final-actions">
+                <button mat-button matStepperPrevious>
+                  <mat-icon>navigate_before</mat-icon>
+                  Modifier
+                </button>
+
+                <button mat-raised-button
+                        color="primary"
+                        (click)="onSubmit()"
+                        [disabled]="basicInfoForm.invalid || priceStockForm.invalid || isLoading"
+                        class="submit-button">
+                  <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+                  <mat-icon *ngIf="!isLoading">save</mat-icon>
+                  {{ isLoading ? 'Ajout en cours...' : 'Ajouter le produit' }}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+        </mat-stepper>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

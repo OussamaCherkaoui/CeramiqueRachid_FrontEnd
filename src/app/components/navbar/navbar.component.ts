@@ -30,7 +30,8 @@ export class NavbarComponent {
     '/administration/promotions',
     '/administration/messages',
     '/administration/spaces/ourSpaces',
-    '/administration/ajouterAdmin'
+    '/administration/ajouterAdmin',
+    '/administration/produits/ajouter'
   ];
 
   constructor(protected router: Router) {}

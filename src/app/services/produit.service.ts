@@ -40,6 +40,9 @@ export class ProduitService {
     return this.http.get<Produit[]>(`${this.baseUrl}/getAllByCategorieName/${name}`);
   }
 
+  public getProduitsByName(name: string): Observable<Produit[]> {
+    return this.http.get<Produit[]>(`${this.baseUrl}/getAllByName/${name}`);
+  }
 
   public saveProduit(produit: Produit): Observable<Produit> {
     return this.http.post<Produit>(`${this.baseUrl}/save`, produit,{ headers: this.getHeaders()});

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Admin} from "../../models/admin";
 import {
   MatCell,
@@ -19,6 +19,9 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {DatePipe} from "@angular/common";
 import {MatChip} from "@angular/material/chips";
 import {MatIconButton} from "@angular/material/button";
+import {Router} from "@angular/router";
+import {MessageService} from "../../services/message.service";
+import {DecodejwtService} from "../../services/decodejwt.service";
 
 @Component({
   selector: 'app-messages-admin',
@@ -50,68 +53,75 @@ import {MatIconButton} from "@angular/material/button";
   templateUrl: './messages-admin.component.html',
   styleUrl: './messages-admin.component.css'
 })
-export class MessagesAdminComponent {
+export class MessagesAdminComponent implements OnInit {
   messages: Message[] = [];
   dataSource = new MatTableDataSource<Message>();
   displayedColumns: string[] = ['id', 'nomEtPrenom', 'email', 'message', 'dateEnvoi', 'repondu', 'actions'];
+  idAdmin!: number;
+  showOnlyUnanswered = false;
+
+  constructor(protected router: Router,protected messageService:MessageService,protected decodeJwt:DecodejwtService) {}
 
   // Filtres
-  dateMin = '';
-  dateMax = '';
-  showOnlyUnanswered = false;
+  dateEnvoi = null;
 
   ngOnInit(): void {
     const admin: Admin = { id: 1, username: 'admin1', password: '', email: 'admin1@mail.com' };
-
-    this.messages = [
-      {
-        id: 1,
-        nomEtPrenom: 'Ali Benbrahim',
-        telephone: 612345678,
-        email: 'ali@gmail.com',
-        message: 'Bonjour, je souhaite avoir des informations.',
-        dateEnvoi: new Date('2025-06-10'),
-        dateReponse: new Date('2025-06-10'),
-        estRepondue: false,
-        admin
-      },
-      {
-        id: 2,
-        nomEtPrenom: 'Sana Elhajoui',
-        telephone: 654321098,
-        email: 'sana@mail.com',
-        message: 'Quand la commande sera livrée ?',
-        dateEnvoi: new Date('2025-06-08'),
-        dateReponse: new Date('2025-06-09'),
-        estRepondue: true,
-        admin
-      }
-    ];
-
-    this.dataSource.data = [...this.messages];
+    this.getAllMessages();
+    this.decodeJwt.getIdByUsername().subscribe(id=>{
+      this.idAdmin = id;
+    })
   }
 
-  filtrerMessages() {
-    this.dataSource.data = this.messages.filter(m => {
-      const date = new Date(m.dateEnvoi);
-      const afterMin = this.dateMin ? date >= new Date(this.dateMin) : true;
-      const beforeMax = this.dateMax ? date <= new Date(this.dateMax) : true;
-      const onlyUnanswered = this.showOnlyUnanswered ? !m.estRepondue : true;
-      return afterMin && beforeMax && onlyUnanswered;
+
+
+  supprimer(id: number) {
+    this.messageService.deleteMessage(id).subscribe(data=>{
+      if (data.message) {
+        this.getAllMessages()
+      }
     });
   }
 
-  supprimer(id: number) {
-    this.messages = this.messages.filter(m => m.id !== id);
-    this.filtrerMessages();
+
+  getAllMessages(): void {
+      this.messageService.getAllMessages().subscribe(messages=>{
+        this.dataSource.data = messages;
+      })
   }
 
   marquerRepondu(id: number) {
-    const message = this.messages.find(m => m.id === id);
-    if (message && !message.estRepondue) {
-      message.estRepondue = true;
-      message.dateReponse = new Date();
-      this.filtrerMessages();
+      this.messageService.updateMessageReply(id,this.idAdmin).subscribe(data=>{
+        if (data.message) {
+          this.getAllMessages()
+        }
+      });
+  }
+
+  filtrerMessages(): void {
+    if (this.dateEnvoi && this.showOnlyUnanswered) {
+      console.log("this.dateEnvoi && this.showOnlyUnanswered");
+      this.messageService.getAllMessagesByDate(this.dateEnvoi).subscribe(messages => {
+        this.dataSource.data = messages.filter(msg => !msg.estRepondue);
+      });
+    } else if (this.showOnlyUnanswered) {
+      console.log("this.showOnlyUnanswered");
+      this.messageService.getAllMessagesNotReply().subscribe(messages => {
+        if (messages.length > 0) {
+          this.dataSource.data = messages;
+        }
+        else{
+          this.dataSource.data = [];
+        }
+      });
+
+    } else if (this.dateEnvoi) {
+      console.log("this.dateEnvoi");
+      this.messageService.getAllMessagesByDate(this.dateEnvoi).subscribe(messages => {
+        this.dataSource.data = messages.length > 0 ? messages : [];
+      });
+    } else {
+      this.getAllMessages();
     }
   }
 }

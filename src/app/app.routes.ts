@@ -12,6 +12,7 @@ import {PromotionService} from "./services/promotion.service";
 import {PromotionsAdminComponent} from "./components/promotions-admin/promotions-admin.component";
 import {AjouterAdminComponent} from "./components/ajouter-admin/ajouter-admin.component";
 import {MessagesAdminComponent} from "./components/messages-admin/messages-admin.component";
+import {AjoutProduitComponent} from "./components/ajout-produit/ajout-produit.component";
 
 export const routes: Routes = [
   { path: '', component: AcceuilComponent},
@@ -23,6 +24,10 @@ export const routes: Routes = [
     children:[{path: '', component: TableauDeBordComponent},
       {path: 'commandes', component: CommandesComponent},
       {path: 'produits', component: ProduitsAdminComponent},
+      {
+        path: 'produits/ajouter',
+        component: AjoutProduitComponent
+      },
       {path: 'promotions', component: PromotionsAdminComponent},
       {path: 'messages', component: MessagesAdminComponent},
       {path: 'ajouterAdmin', component: AjouterAdminComponent}]}

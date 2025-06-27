@@ -2,6 +2,11 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 import {NgForOf, NgIf} from "@angular/common";
 import {Chart, ChartConfiguration, ChartType} from "chart.js";
 import {FormsModule} from "@angular/forms";
+import {AdminService} from "../../services/admin.service";
+import {CommandeService} from "../../services/commande.service";
+import {MessageService} from "../../services/message.service";
+import {PromotionService} from "../../services/promotion.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-tableau-de-bord',
@@ -29,13 +34,10 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
   isChartLoading: boolean = false;
   selectedChartType: ChartType = 'bar';
 
-  // Stats data
-  stats = {
-    adminCount: 4,
-    todayOrders: 3,
-    activePromotions: 7,
-    unreadMessages: 10
-  };
+  adminCount: number = 0;
+  todayOrders: number = 0;
+  activePromotions: number = 0;
+  unreadMessages: number = 0;
 
   // Chart data
   chartData = {
@@ -47,10 +49,23 @@ export class TableauDeBordComponent implements OnInit, AfterViewInit {
   calendarDays: number[] = [];
   calendarHeaders: string[] = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef,protected adminService:AdminService,protected commandeService:CommandeService,protected messageService:MessageService,protected promotionService:PromotionService) {}
 
   ngOnInit(): void {
     this.generateCalendarDays();
+      this.adminService.countRegistredAdmin().subscribe(dt=>{
+        this.adminCount = dt;
+      });
+
+      this.commandeService.countOrderDay().subscribe(dt=>{
+        this.todayOrders = dt;
+      });
+      this.promotionService.countPromotionActive().subscribe(dt=>{
+        this.activePromotions = dt;
+      });
+      this.messageService.countMessagesNotReply().subscribe(dt=>{
+        this.unreadMessages = dt;
+      });
   }
 
   ngAfterViewInit(): void {

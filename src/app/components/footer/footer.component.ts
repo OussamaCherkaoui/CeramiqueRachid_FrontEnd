@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-footer',
   standalone: true,
   imports: [
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css'
@@ -21,7 +22,8 @@ export class FooterComponent {
     '/administration/promotions',
     '/administration/messages',
     '/administration/spaces/ourSpaces',
-    '/administration/ajouterAdmin'
+    '/administration/ajouterAdmin',
+    '/administration/produits/ajouter'
   ];
 
   constructor(protected router: Router) {}

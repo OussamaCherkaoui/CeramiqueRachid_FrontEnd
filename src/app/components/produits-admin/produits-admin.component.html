@@ -83,7 +83,7 @@
     <!-- Liste des produits -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div
-        *ngFor="let produit of filteredProduits"
+        *ngFor="let produit of produits"
         class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
       >
         <!-- Image -->
@@ -142,7 +142,7 @@
     </div>
 
     <!-- Message si aucun produit -->
-    <div *ngIf="filteredProduits.length === 0" class="text-center py-12">
+    <div *ngIf="produits.length === 0" class="text-center py-12">
       <i class="fas fa-box text-6xl text-gray-400 mb-4"></i>
       <p class="text-gray-500">Aucun produit trouvé</p>
     </div>

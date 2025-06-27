@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Produit} from "../../models/produit";
 import {Categorie} from "../../models/categorie";
 import {Subscription} from "rxjs";
@@ -6,6 +6,7 @@ import {ProduitService} from "../../services/produit.service";
 import {CategorieService} from "../../services/categorie.service";
 import {FormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
+import {Router, RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-produits-admin',
@@ -18,7 +19,7 @@ import {NgForOf, NgIf} from "@angular/common";
   templateUrl: './produits-admin.component.html',
   styleUrl: './produits-admin.component.css'
 })
-export class ProduitsAdminComponent {
+export class ProduitsAdminComponent implements OnInit {
 
   produits: Produit[] = [];
   categories: Categorie[] = [];
@@ -33,24 +34,24 @@ export class ProduitsAdminComponent {
   // Subscriptions
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private produitService: ProduitService,private categorieService: CategorieService) { }
+
+  constructor(private produitService: ProduitService,private categorieService: CategorieService,private router: Router) { }
 
   ngOnInit(): void {
-    // Charger les données
-    this.subscriptions.add(
-      this.produitService.getAllProduits().subscribe(produits => {
-        this.produits = produits;
-        this.filterProduits();
-      })
-    );
+      this.getAllProducts();
+      this.getAllCategorie();
+  }
 
+  getAllProducts(): void {
+    this.produitService.getAllProduits().subscribe(produits => {
+      this.produits = produits;
+    })
+  }
 
-
-    this.subscriptions.add(
-      this.categorieService.getAll().subscribe(categories => {
-        this.categories = categories;
-      })
-    );
+  getAllCategorie(): void {
+    this.categorieService.getAll().subscribe(categories => {
+      this.categories = categories;
+    })
   }
 
   ngOnDestroy(): void {
@@ -61,21 +62,22 @@ export class ProduitsAdminComponent {
   filterProduits(): void {
     let filtered = this.produits;
 
+
     // Filtre par terme de recherche
     if (this.searchTerm.trim()) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(produit =>
-        produit.nom.toLowerCase().includes(term) ||
-        produit.description.toLowerCase().includes(term)
-      );
+      this.produitService.getProduitsByName(this.searchTerm).subscribe(produits => {
+        this.produits = produits;
+      })
     }
+    else this.getAllProducts()
 
     // Filtre par catégorie
     if (this.selectedCategoryId) {
-      filtered = filtered.filter(produit =>
-        produit.categorie.id === this.selectedCategoryId
-      );
+      this.produitService.getProduitsByCategorieId(this.selectedCategoryId).subscribe(produits => {
+        this.produits = produits;
+      })
     }
+    else this.getAllProducts()
 
     // Filtre stock faible
     if (this.showLowStock) {
@@ -105,9 +107,7 @@ export class ProduitsAdminComponent {
 
   // Actions produits
   onAjouterProduit(): void {
-    // Ouvrir modal d'ajout
-    console.log('Ajouter nouveau produit');
-    // Implémentation avec modal ou navigation
+    this.router.navigate(['/administration/produits/ajouter']);
   }
 
   onModifierProduit(produit: Produit): void {
