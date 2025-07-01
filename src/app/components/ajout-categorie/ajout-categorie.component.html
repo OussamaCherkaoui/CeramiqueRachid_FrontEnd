@@ -1,0 +1,157 @@
+<div class="container-fluid p-4">
+  <!-- Header avec navigation -->
+  <mat-toolbar color="primary" class="mb-4 rounded-lg">
+    <button mat-icon-button (click)="retourner()" matTooltip="Retour">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="ml-3">Ajouter une nouvelle catégorie</span>
+    <span class="spacer"></span>
+    <mat-icon>category</mat-icon>
+  </mat-toolbar>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <!-- Carte principale du formulaire -->
+      <mat-card class="elevation-4">
+        <mat-card-header class="pb-3">
+          <div mat-card-avatar class="category-avatar">
+            <mat-icon>add_circle</mat-icon>
+          </div>
+          <mat-card-title>Nouvelle Catégorie</mat-card-title>
+          <mat-card-subtitle>Remplissez les informations de la catégorie</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()" class="category-form">
+            <!-- Champ Nom -->
+            <mat-form-field appearance="outline" class="full-width mb-3">
+              <mat-label>Nom de la catégorie</mat-label>
+              <input
+                matInput
+                formControlName="nom"
+                placeholder="Ex: Carrelage, Sanitaire..."
+                maxlength="50">
+              <mat-icon matSuffix>label</mat-icon>
+              <mat-hint align="end">{{categorieForm.get('nom')?.value?.length || 0}}/50</mat-hint>
+              <mat-error *ngIf="categorieForm.get('nom')?.hasError('required')">
+                Le nom est obligatoire
+              </mat-error>
+              <mat-error *ngIf="categorieForm.get('nom')?.hasError('minlength')">
+                Le nom doit contenir au moins 2 caractères
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Champ Description -->
+            <mat-form-field appearance="outline" class="full-width mb-3">
+              <mat-label>Description</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                placeholder="Décrivez cette catégorie..."
+                rows="4"
+                maxlength="255">
+              </textarea>
+              <mat-icon matSuffix>description</mat-icon>
+              <mat-hint align="end">{{categorieForm.get('description')?.value?.length || 0}}/255</mat-hint>
+              <mat-error *ngIf="categorieForm.get('description')?.hasError('required')">
+                La description est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Upload d'image de catégorie -->
+            <div class="image-upload-section mb-4">
+              <mat-label class="upload-label">Image de la catégorie (optionnel)</mat-label>
+
+              <!-- Zone de drop et upload -->
+              <div class="image-upload-container"
+                   [class.drag-over]="isDragOver"
+                   (dragover)="onDragOver($event)"
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onDrop($event)">
+
+                <!-- Prévisualisation de l'image -->
+                <div *ngIf="selectedImageUrl" class="image-preview-container">
+                  <img [src]="selectedImageUrl" alt="Aperçu de l'image" class="image-preview">
+                  <div class="image-overlay">
+                    <button mat-icon-button (click)="removeImage()" class="remove-image-btn" type="button">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="changeImage()" class="change-image-btn" type="button">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Zone d'upload initiale -->
+                <div *ngIf="!selectedImageUrl" class="upload-zone" (click)="triggerFileInput()">
+                  <mat-icon class="upload-icon">cloud_upload</mat-icon>
+                  <p class="upload-text">Glissez-déposez une image ici</p>
+                  <p class="upload-subtext">ou cliquez pour parcourir</p>
+                  <button mat-stroked-button color="primary" type="button">
+                    <mat-icon>add_photo_alternate</mat-icon>
+                    Choisir une image
+                  </button>
+                </div>
+
+                <!-- Input file caché -->
+                <input
+                  #fileInput
+                  type="file"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                  class="hidden-file-input">
+              </div>
+
+              <!-- Informations sur l'image -->
+              <div class="image-info" *ngIf="selectedFile">
+                <div class="file-details">
+                  <mat-icon>info</mat-icon>
+                  <span>{{ selectedFile.name }} ({{ formatFileSize(selectedFile.size) }})</span>
+                </div>
+              </div>
+
+              <!-- Conseils pour l'image -->
+              <mat-hint class="upload-hints">
+                Formats acceptés: JPG, PNG, GIF, WebP. Taille max: 5MB.
+                Recommandé: 400x400px pour un meilleur rendu.
+              </mat-hint>
+            </div>
+
+          </form>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="p-3">
+          <button
+            mat-button
+            type="button"
+            (click)="retourner()"
+            class="mr-2">
+            <mat-icon>cancel</mat-icon>
+            <span class="ml-1">Annuler</span>
+          </button>
+
+          <button
+            mat-button
+            type="button"
+            (click)="resetForm()"
+            [disabled]="!categorieForm.dirty"
+            class="mr-2">
+            <mat-icon>refresh</mat-icon>
+            <span class="ml-1">Réinitialiser</span>
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            (click)="onSubmit()"
+            [disabled]="!categorieForm.valid || isLoading">
+            <mat-spinner *ngIf="isLoading" diameter="20" class="mr-2"></mat-spinner>
+            <mat-icon *ngIf="!isLoading">save</mat-icon>
+            <span class="ml-1">{{isLoading ? 'Enregistrement...' : 'Enregistrer'}}</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

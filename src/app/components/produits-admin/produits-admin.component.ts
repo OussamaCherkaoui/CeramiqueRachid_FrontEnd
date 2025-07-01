@@ -7,6 +7,9 @@ import {CategorieService} from "../../services/categorie.service";
 import {FormsModule} from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
+import {ModifieProduitComponent} from "../modifie-produit/modifie-produit.component";
+import {MatDialog} from "@angular/material/dialog";
+import {ModifieCategorieComponent} from "../modifie-categorie/modifie-categorie.component";
 
 @Component({
   selector: 'app-produits-admin',
@@ -14,7 +17,7 @@ import {Router, RouterLink} from "@angular/router";
   imports: [
     FormsModule,
     NgIf,
-    NgForOf
+    NgForOf,
   ],
   templateUrl: './produits-admin.component.html',
   styleUrl: './produits-admin.component.css'
@@ -35,17 +38,17 @@ export class ProduitsAdminComponent implements OnInit {
   private subscriptions: Subscription = new Subscription();
 
 
-  constructor(private produitService: ProduitService,private categorieService: CategorieService,private router: Router) { }
+  constructor(private dialog: MatDialog,private produitService: ProduitService,private categorieService: CategorieService,private router: Router) { }
 
   ngOnInit(): void {
-      this.getAllProducts();
+      this.filterProduits();
       this.getAllCategorie();
   }
 
   getAllProducts(): void {
     this.produitService.getAllProduits().subscribe(produits => {
       this.produits = produits;
-    })
+    });
   }
 
   getAllCategorie(): void {
@@ -54,37 +57,41 @@ export class ProduitsAdminComponent implements OnInit {
     })
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
 
-  // Filtrage des produits
   filterProduits(): void {
-    let filtered = this.produits;
+    this.produitService.getAllProduits().subscribe(produits => {
+      this.produits = produits;
+
+      let filtered = [...this.produits]; // copie locale
+
+      if (!this.selectedCategoryId) {
+        filtered = [...this.produits];
+      }
+
+      if (this.searchTerm.trim()) {
+        const term = this.searchTerm.toLowerCase();
+        filtered = filtered.filter(p =>
+          p.nom.toLowerCase().includes(term) ||
+          p.description?.toLowerCase().includes(term)
+        );
+      }
+
+      // Filtre par catégorie
+      if (this.selectedCategoryId !== null && this.selectedCategoryId !== undefined) {
+        console.log(this.selectedCategoryId);
+        filtered = filtered.filter(p => p.categorie.id == this.selectedCategoryId);
+      }
 
 
-    // Filtre par terme de recherche
-    if (this.searchTerm.trim()) {
-      this.produitService.getProduitsByName(this.searchTerm).subscribe(produits => {
-        this.produits = produits;
-      })
-    }
-    else this.getAllProducts()
 
-    // Filtre par catégorie
-    if (this.selectedCategoryId) {
-      this.produitService.getProduitsByCategorieId(this.selectedCategoryId).subscribe(produits => {
-        this.produits = produits;
-      })
-    }
-    else this.getAllProducts()
+      // Stock faible
+      if (this.showLowStock) {
+        filtered = filtered.filter(p => p.quantite <= 10);
+      }
 
-    // Filtre stock faible
-    if (this.showLowStock) {
-      filtered = filtered.filter(produit => produit.quantite <= 5);
-    }
+      this.filteredProduits = filtered;
+    });
 
-    this.filteredProduits = filtered;
   }
 
   // Event handlers
@@ -92,7 +99,8 @@ export class ProduitsAdminComponent implements OnInit {
     this.filterProduits();
   }
 
-  onCategoryFilterChange(): void {
+  onCategoryFilterChange(value: number | null): void {
+    this.selectedCategoryId = value;
     this.filterProduits();
   }
 
@@ -107,40 +115,63 @@ export class ProduitsAdminComponent implements OnInit {
 
   // Actions produits
   onAjouterProduit(): void {
-    this.router.navigate(['/administration/produits/ajouter']);
+    this.router.navigate(['/administration/produits/ajouterProduit']);
   }
 
   onModifierProduit(produit: Produit): void {
     console.log('Modifier produit:', produit);
-    // Ouvrir modal de modification
+    const dialogRef = this.dialog.open(ModifieProduitComponent, {
+      width: '800px',
+      data: { produit },
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') {
+        this.getAllProducts();
+      }
+    });
   }
 
   onSupprimerProduit(produit: Produit): void {
     if (confirm(`Êtes-vous sûr de vouloir supprimer "${produit.nom}" ?`)) {
-      this.produitService.deleteProduit(produit.id);
+      this.produitService.deleteProduit(produit.id).subscribe(data=>{
+        if (data){
+          alert("Le prouit est supprimé avec succes");
+          this.getAllProducts();
+        }
+      });
+
     }
   }
 
   // Actions catégories
   onAjouterCategorie(): void {
-    console.log('Ajouter nouvelle catégorie');
-    // Ouvrir modal d'ajout
+    this.router.navigate(['/administration/produits/ajouterCategorie']);
   }
 
   onModifierCategorie(categorie: Categorie): void {
-    console.log('Modifier catégorie:', categorie);
-    // Ouvrir modal de modification
+    const dialogRef = this.dialog.open(ModifieCategorieComponent, {
+      width: '600px',
+      data: categorie
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'updated') {
+        this.getAllCategorie(); // recharge la liste des catégories
+      }
+    });
   }
 
   onSupprimerCategorie(categorie: Categorie): void {
-    const produitsDeCategorie = this.produits.filter(p => p.categorie.id === categorie.id);
-    if (produitsDeCategorie.length > 0) {
-      alert(`Impossible de supprimer cette catégorie car elle contient ${produitsDeCategorie.length} produit(s).`);
-      return;
-    }
 
     if (confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categorie.nom}" ?`)) {
-      this.categorieService.delete(categorie.id);
+      this.categorieService.delete(categorie.id).subscribe(data=>{
+        if (data){
+          alert("La catégorie est supprimé avec succes");
+          this.getAllCategorie();
+        }
+      });
     }
   }
 
@@ -162,6 +193,7 @@ export class ProduitsAdminComponent implements OnInit {
     if (quantite <= 5) return 'bg-orange-500';
     return '';
   }
+
 
   getProduitsCountByCategory(categoryId: number): number {
     return this.produits.filter(p => p.categorie.id === categoryId).length;

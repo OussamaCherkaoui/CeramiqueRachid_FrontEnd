@@ -12,7 +12,7 @@ import {MatToolbar} from "@angular/material/toolbar";
 import {MatCard, MatCardContent, MatCardHeader, MatCardTitle} from "@angular/material/card";
 import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {MatButton, MatFabButton} from "@angular/material/button";
+import {MatButton, MatFabButton, MatIconButton} from "@angular/material/button";
 import {MatInput} from "@angular/material/input";
 import {MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
@@ -47,7 +47,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     MatFabButton,
     MatCardHeader,
     MatProgressSpinner,
-    MatLabel
+    MatLabel,
+    MatIconButton
   ],
   templateUrl: './ajout-produit.component.html',
   styleUrl: './ajout-produit.component.css'
@@ -62,9 +63,15 @@ export class AjoutProduitComponent implements OnInit {
   isLoading = false;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
-  produitForm: FormGroup = this.fb.group({
-  });
-   produit!:Produit;
+  produit: Produit = {
+    id: 0,
+    nom: '',
+    description: '',
+    prix: 0,
+    quantite: 0,
+    image: '',
+    categorie: { id: 0, nom: '', description: '' ,image:''}
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -146,34 +153,40 @@ export class AjoutProduitComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.basicInfoForm.invalid || this.priceStockForm.invalid) {
+      this.showSnackBar('Veuillez remplir tous les champs requis', 'error');
+      return;
+    }
 
-  if (this.produitForm.valid) {
-  this.isLoading = true;
+    const formData = new FormData();
+    formData.append('nom', this.basicInfoForm.get('nom')?.value);
+    formData.append('description', this.basicInfoForm.get('description')?.value);
+    formData.append('prix', this.priceStockForm.get('prix')?.value);
+    formData.append('quantite', this.priceStockForm.get('quantite')?.value);
+    formData.append('categorieId', this.basicInfoForm.get('categorieId')?.value);
 
-  this.produit.nom = this.produitForm.get('nom')?.value;
-  this.produit.description = this.produitForm.get('description')?.value;
-  this.produit.prix = this.produitForm.get('prix')?.value;
-  this.produit.quantite = this.produitForm.get('quantite')?.value;
-  this.produit.categorie.id = this.produitForm.get('categorieId')?.value;
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
 
-
-
-  this.produitService.saveProduit(this.produit).subscribe(
-    response => {
-  console.log('Produit ajouté avec succès:', response);
-  this.router.navigate(['/admin/produits']);
-},
-error => {
-  console.error('Erreur lors de l\'ajout du produit:', error);
-  this.isLoading = false;
-}
-);
-}
+    this.isLoading = true;
+    this.produitService.saveProduit(formData).subscribe({
+      next: (res:Produit) => {
+        this.isLoading = false;
+        this.showSnackBar('Produit ajouté avec succès', 'success');
+        this.router.navigate(['/administration/produits']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showSnackBar('Erreur lors de l\'ajout du produit', 'error');
+        console.error(err);
+      }
+    });
 
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/produits']);
+    this.router.navigate(['/administration/produits']);
   }
 
   private showSnackBar(message: string, type: 'success' | 'error'): void {

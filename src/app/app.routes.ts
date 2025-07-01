@@ -13,6 +13,8 @@ import {PromotionsAdminComponent} from "./components/promotions-admin/promotions
 import {AjouterAdminComponent} from "./components/ajouter-admin/ajouter-admin.component";
 import {MessagesAdminComponent} from "./components/messages-admin/messages-admin.component";
 import {AjoutProduitComponent} from "./components/ajout-produit/ajout-produit.component";
+import {AjouterPromotionsComponent} from "./components/ajouter-promotions/ajouter-promotions.component";
+import {AjoutCategorieComponent} from "./components/ajout-categorie/ajout-categorie.component";
 
 export const routes: Routes = [
   { path: '', component: AcceuilComponent},
@@ -25,10 +27,18 @@ export const routes: Routes = [
       {path: 'commandes', component: CommandesComponent},
       {path: 'produits', component: ProduitsAdminComponent},
       {
-        path: 'produits/ajouter',
+        path: 'produits/ajouterProduit',
         component: AjoutProduitComponent
       },
+      {
+        path: 'produits/ajouterCategorie',
+        component: AjoutCategorieComponent
+      },
       {path: 'promotions', component: PromotionsAdminComponent},
+      {
+        path: 'promotions/ajouter',
+        component: AjouterPromotionsComponent
+      },
       {path: 'messages', component: MessagesAdminComponent},
       {path: 'ajouterAdmin', component: AjouterAdminComponent}]}
 ];

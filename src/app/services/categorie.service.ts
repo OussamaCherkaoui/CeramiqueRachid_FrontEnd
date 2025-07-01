@@ -29,16 +29,19 @@ export class CategorieService {
     return this.http.get<Categorie[]>(`${this.baseUrl}/getAll`);
   }
 
-  public save(categorie: Categorie): Observable<Categorie> {
+  public save(categorie: FormData): Observable<Categorie> {
     return this.http.post<Categorie>(`${this.baseUrl}/save`, categorie, { headers: this.getHeaders() });
   }
 
-  public update(categorie: Categorie): Observable<Categorie> {
+  public update(categorie: FormData): Observable<Categorie> {
     return this.http.put<Categorie>(`${this.baseUrl}/update`, categorie, { headers: this.getHeaders() });
   }
 
   public delete(id: number): Observable<Categorie> {
     return this.http.delete<Categorie>(`${this.baseUrl}/delete/${id}`, { headers: this.getHeaders() });
+  }
+  public getCategorieById(id: number): Observable<Categorie> {
+    return this.http.get<Categorie>(`${this.baseUrl}/getCategorieById/${id}`, { headers: this.getHeaders() });
   }
 
 }

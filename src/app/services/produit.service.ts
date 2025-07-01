@@ -44,12 +44,12 @@ export class ProduitService {
     return this.http.get<Produit[]>(`${this.baseUrl}/getAllByName/${name}`);
   }
 
-  public saveProduit(produit: Produit): Observable<Produit> {
-    return this.http.post<Produit>(`${this.baseUrl}/save`, produit,{ headers: this.getHeaders()});
+  public saveProduit(formData: FormData): Observable<Produit> {
+    return this.http.post<Produit>(`${this.baseUrl}/save`, formData, { headers: this.getHeaders() });
   }
 
 
-  public updateProduit(produit: Produit): Observable<Produit> {
+  public updateProduit(produit: FormData): Observable<Produit> {
     return this.http.put<Produit>(`${this.baseUrl}/update`, produit,{ headers: this.getHeaders()});
   }
 

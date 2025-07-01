@@ -49,12 +49,12 @@
 
         <!-- Filtre par catégorie -->
         <select
-          [(ngModel)]="selectedCategoryId"
-          (change)="onCategoryFilterChange()"
+          [ngModel]="selectedCategoryId"
+          (ngModelChange)="onCategoryFilterChange($event)"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
-          <option [value]="null">Toutes les catégories</option>
-          <option *ngFor="let category of categories" [value]="category.id">
+          <option [ngValue]="null">Toutes les catégories</option>
+          <option *ngFor="let category of categories" [ngValue]="category.id">
             {{ category.nom }}
           </option>
         </select>
@@ -83,13 +83,13 @@
     <!-- Liste des produits -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div
-        *ngFor="let produit of produits"
+        *ngFor="let produit of filteredProduits"
         class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
       >
         <!-- Image -->
         <div class="h-48 bg-gray-200 relative">
           <img
-            [src]="produit.image"
+            [src]="'http://localhost:8080' + produit.image"
             [alt]="produit.nom"
             class="w-full h-full object-cover"
           />
@@ -166,37 +166,60 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         *ngFor="let categorie of categories"
-        class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
+        class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
       >
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex-1">
-            <h3 class="font-semibold text-gray-800 mb-2">{{ categorie.nom }}</h3>
-            <p class="text-gray-600 mb-4">{{ categorie.description }}</p>
+        <!-- Image de la catégorie -->
+        <div class="h-32 bg-gray-200 relative">
+          <img
+            [src]=" 'http://localhost:8080' + categorie.image"
+            [alt]="categorie.nom"
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute top-2 left-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+            <i class="fas fa-tag mr-1"></i>
+            Catégorie
           </div>
-          <i class="fas fa-tag text-2xl text-blue-500"></i>
         </div>
 
-        <div class="text-sm text-gray-500 mb-4">
-          {{ getProduitsCountByCategory(categorie.id) }} produit(s)
-        </div>
+        <!-- Contenu -->
+        <div class="p-4">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-800 mb-2">{{ categorie.nom }}</h3>
+              <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ categorie.description }}</p>
+            </div>
+          </div>
 
-        <div class="flex space-x-2">
-          <button
-            (click)="onModifierCategorie(categorie)"
-            class="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
-          >
-            <i class="fas fa-edit"></i>
-            <span>Modifier</span>
-          </button>
-          <button
-            (click)="onSupprimerCategorie(categorie)"
-            class="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
-          >
-            <i class="fas fa-trash"></i>
-            <span>Supprimer</span>
-          </button>
+          <div class="text-sm text-gray-500 mb-4 flex items-center">
+            <i class="fas fa-box mr-2"></i>
+            {{ getProduitsCountByCategory(categorie.id) }} produit(s)
+          </div>
+
+          <!-- Actions -->
+          <div class="flex space-x-2">
+            <button
+              (click)="onModifierCategorie(categorie)"
+              class="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
+            >
+              <i class="fas fa-edit"></i>
+              <span>Modifier</span>
+            </button>
+            <button
+              (click)="onSupprimerCategorie(categorie)"
+              class="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center space-x-1"
+            >
+              <i class="fas fa-trash"></i>
+              <span>Supprimer</span>
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Message si aucune catégorie -->
+    <div *ngIf="categories.length === 0" class="text-center py-12">
+      <i class="fas fa-tags text-6xl text-gray-400 mb-4"></i>
+      <p class="text-gray-500">Aucune catégorie trouvée</p>
     </div>
   </div>
 </div>

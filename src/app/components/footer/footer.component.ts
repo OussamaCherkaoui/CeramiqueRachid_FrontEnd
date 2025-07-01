@@ -23,7 +23,9 @@ export class FooterComponent {
     '/administration/messages',
     '/administration/spaces/ourSpaces',
     '/administration/ajouterAdmin',
-    '/administration/produits/ajouter'
+    '/administration/produits/ajouterProduit',
+    '/administration/promotions/ajouter',
+    '/administration/produits/ajouterCategorie',
   ];
 
   constructor(protected router: Router) {}

@@ -10,7 +10,7 @@
           <h1 class="text-3xl font-bold text-gray-900">Gestion des Promotions</h1>
           <p class="text-sm text-gray-600 mt-1">Gérez vos promotions et offres spéciales</p>
         </div>
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Nouvelle Promotion</button>
+        <button routerLink="/administration/promotions/ajouter" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Nouvelle Promotion</button>
       </div>
     </div>
   </div>
@@ -27,32 +27,6 @@
       <button (click)="clearFilters()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
         Effacer les filtres
       </button>
-    </div>
-
-    <!-- Statistiques -->
-    <div class="grid md:grid-cols-4 gap-6 mb-6">
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <p class="text-sm text-gray-600">Total Promotions</p>
-        <p class="text-2xl font-bold text-gray-900">{{ promotions.length }}</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <p class="text-sm text-gray-600">Promotions Actives</p>
-        <p class="text-2xl font-bold text-gray-900">
-          {{ getPromotionsActives() }}
-        </p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <p class="text-sm text-gray-600">À venir</p>
-        <p class="text-2xl font-bold text-gray-900">
-          {{ getPromotionsAVenir() }}
-        </p>
-      </div>
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <p class="text-sm text-gray-600">Expirées</p>
-        <p class="text-2xl font-bold text-gray-900">
-          {{ getPromotionsExpirees() }}
-        </p>
-      </div>
     </div>
 
     <!-- Tableau des promotions -->
@@ -79,7 +53,7 @@
               <div class="text-sm text-gray-500">{{ p.description }}</div>
             </td>
             <td class="px-6 py-4">
-              <div class="text-sm font-medium text-gray-900">{{ p.produit.nom }}</div>
+              <div class="text-sm font-medium text-gray-900" >{{ p.produit.nom }}</div>
               <div class="text-sm text-gray-500">{{ p.produit.categorie }} • {{ p.produit.prix }}€</div>
             </td>
             <td class="px-6 py-4">
@@ -92,21 +66,18 @@
               <div>Au {{ formatDate(p.dateFin) }}</div>
             </td>
             <td class="px-6 py-4">
-              <ng-container [ngSwitch]="getPromotionStatus(p.dateDebut, p.dateFin)">
-                  <span
-                    *ngSwitchCase="getPromotionStatus(p.dateDebut, p.dateFin)"
-                    class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium"
-                    [ngClass]="getPromotionStatus(p.dateDebut, p.dateFin).color">
-                    {{ getPromotionStatus(p.dateDebut, p.dateFin).status }}
-                  </span>
-              </ng-container>
+              <span
+                class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium"
+                [ngClass]="getPromotionStatusClass(p.dateDebut, p.dateFin)">
+                {{ getPromotionStatusText(p.dateDebut, p.dateFin) }}
+              </span>
             </td>
             <td class="px-6 py-4 text-right text-sm font-medium">
               <div class="flex items-center justify-end space-x-2">
-                <button class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50">
+                <button
+                  (click)="deletePromotion(p.id, p.titre)"
+                  class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                  title="Supprimer">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
